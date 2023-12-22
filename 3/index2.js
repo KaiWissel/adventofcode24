@@ -32,12 +32,12 @@ const { open } = require("node:fs/promises");
       }
     })
     .filter((e) => !!e)
-    .map((e) => [e[0].value, e[1].value]);
+    .map((e) => e[0].value * e[1].value);
 
   console.log(symbolsMap);
   console.log(numbersMap);
   console.log(gearNumbers);
-  console.log(gearNumbers.reduce((acc, cur) => acc + +cur[0] * +cur[1], 0));
+  console.log(gearNumbers.reduce((acc, cur) => acc + cur, 0));
 })();
 
 function parseLine(line, lineNumber) {
