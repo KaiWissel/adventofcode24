@@ -19,18 +19,16 @@ const { open } = require("node:fs/promises");
   }
 
   const gearNumbers = symbolsMap
-    .map((s) => {
-      const numbersAdjacent = numbersMap.filter(
+    .map((s) =>
+      numbersMap.filter(
         (n) =>
           s.line >= n.line - 1 &&
           s.line <= n.line + 1 &&
           s.pos >= n.startPos - 1 &&
           s.pos <= n.endPos + 1
-      );
-      if (numbersAdjacent.length == 2) {
-        return numbersAdjacent;
-      }
-    })
+      )
+    )
+    .filter((e) => e.length == 2)
     .filter((e) => !!e)
     .map((e) => e[0].value * e[1].value);
 
