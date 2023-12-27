@@ -17,7 +17,6 @@ let humidityToLocation = [];
   const file = await open("./input.txt");
 
   let firstLine = true;
-  let firstBreak = true;
   for await (const line of file.readLines()) {
     if (firstLine) {
       parseSeeds(line);
@@ -48,12 +47,6 @@ let humidityToLocation = [];
         current = humidityToLocation;
         break;
       case "":
-        if (firstBreak) {
-          firstBreak = false;
-          continue;
-        }
-
-        // fillGaps();
         break;
 
       default:
@@ -71,20 +64,23 @@ let humidityToLocation = [];
   console.log(humidityToLocation);
 
   const start = new Date().getTime();
+  const mapper = new Mapper();
 
-  let cache;
   seeds.forEach((s) => {
     for (let index = s.start; index < s.end; index++) {
-      cache = findMatch(index, seedToSoil);
-      cache = findMatch(cache, soilToFertilizer);
-      cache = findMatch(cache, fertilizerToWater);
-      cache = findMatch(cache, waterToLight);
-      cache = findMatch(cache, lightToTemperature);
-      cache = findMatch(cache, temperatureToHumidity);
-      cache = findMatch(cache, humidityToLocation);
+      const currentLocation = mapper
+        .start(index)
+        .map(seedToSoil)
+        .map(soilToFertilizer)
+        .map(fertilizerToWater)
+        .map(waterToLight)
+        .map(lightToTemperature)
+        .map(temperatureToHumidity)
+        .map(humidityToLocation)
+        .finish();
 
-      if (cache < lowestLocation) {
-        lowestLocation = cache;
+      if (currentLocation < lowestLocation) {
+        lowestLocation = currentLocation;
         console.log("new lowest:", lowestLocation);
       }
     }
@@ -92,11 +88,7 @@ let humidityToLocation = [];
 
   const end = new Date().getTime();
   console.log("It took %i seconds to compute", (end - start) / 1000);
-
-  console.log(lowestLocation);
-
-  // console.log(Math.min(...current));
-  // console.log(seeds.reduce((acc, cur) => cur.end - cur.start + acc, 0));
+  console.log("Lowest location is:", lowestLocation);
 })();
 
 function parseSeeds(line) {
@@ -118,7 +110,6 @@ function parseSeeds(line) {
   });
 
   console.log("Seeds:", seeds);
-
   return seeds;
 }
 
@@ -145,4 +136,22 @@ function findMatch(value, map) {
   }
 
   return value;
+}
+
+function Mapper() {
+  let cache;
+
+  this.start = function (value) {
+    cache = value;
+    return this;
+  };
+
+  this.map = function (map) {
+    cache = findMatch(cache, map);
+    return this;
+  };
+
+  this.finish = function () {
+    return cache;
+  };
 }
