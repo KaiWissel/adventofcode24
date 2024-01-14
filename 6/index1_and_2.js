@@ -54,11 +54,11 @@ function calcRace(race) {
     // console.log("ownDistance", ownDistance);
 
     if (ownDistance > recordDistance) {
-      console.log(
-        "Charging for %i beats record of %i",
-        chargeTime,
-        recordDistance
-      );
+      // console.log(
+      //   "Charging for %i beats record of %i",
+      //   chargeTime,
+      //   recordDistance
+      // );
       beatCounter++;
     }
   }
