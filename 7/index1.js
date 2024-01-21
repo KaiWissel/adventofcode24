@@ -33,6 +33,7 @@ let sets = [];
 
   sets.forEach((s) => console.log(s));
   console.log(result);
+  // 250232501
 })();
 
 function parseLine(line) {
